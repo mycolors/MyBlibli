@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="view_margin">16dp</dimen>
+    <dimen name="view_margin_small">8dp</dimen>
+    <dimen name="view_padding">16dp</dimen>
+    <dimen name="view_padding_small">8dp</dimen>
+    <dimen name="font_size_big">23sp</dimen>
+    <dimen name="font_size">16sp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="status_bar_height">0dp</dimen>
+    <dimen name="sidebar_textsize">15sp</dimen>
+
+
+    <!-- Navigation -->
+    <dimen name="navigation_header_height">200dp</dimen>
+    <dimen name="navigation_avatar_size">74dp</dimen>
+    <dimen name="navigation_subtitle_secondary_text_size">14sp</dimen>
+
+
+</resources>
