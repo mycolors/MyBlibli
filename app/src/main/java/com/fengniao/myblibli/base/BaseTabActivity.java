@@ -3,7 +3,6 @@ package com.fengniao.myblibli.base;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,7 +29,7 @@ public abstract class BaseTabActivity extends BaseActivity {
     private int firstPosition;
 
     //tab文字
-    private String[] strings;
+    private int[] strings;
     //tabFragment实例
     private Fragment[] fragments;
     //tabIcon
@@ -43,7 +42,6 @@ public abstract class BaseTabActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base_tab);
         initData();
         initView();
     }
@@ -59,7 +57,7 @@ public abstract class BaseTabActivity extends BaseActivity {
             fragments = new Fragment[fragmentClasses.length];
         //当activity横竖屏转换时或意外销毁重建时拿出缓存的fragment实例
         for (int i = 0; i < fragments.length; i++) {
-            fragments[i] = getSupportFragmentManager().findFragmentByTag(strings[i]);
+            fragments[i] = getSupportFragmentManager().findFragmentByTag(getString(strings[i]));
         }
     }
 
@@ -74,7 +72,8 @@ public abstract class BaseTabActivity extends BaseActivity {
         }
         if (!fragments[firstPosition].isAdded()) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.content, fragments[firstPosition], strings[firstPosition]).show(fragments[firstPosition])
+                    .add(R.id.content, fragments[firstPosition], getString(strings[firstPosition]))
+                    .show(fragments[firstPosition])
                     .commit();
         } else {
             //如果是缓存的fragment就一定是被add过的，所以直接show
@@ -94,12 +93,7 @@ public abstract class BaseTabActivity extends BaseActivity {
             textTab.setText(strings[i]);
             linearTab.addView(linear);
             final int finalI = i;
-            linear.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onTabClick(finalI);
-                }
-            });
+            linear.setOnClickListener(v -> onTabClick(finalI));
         }
 
         selectTab(firstPosition);
@@ -114,7 +108,7 @@ public abstract class BaseTabActivity extends BaseActivity {
             }
         selectTab(position);
         addOrShowFragment(getSupportFragmentManager().beginTransaction(),
-                fragments[position], strings[position]);
+                fragments[position], getString(strings[position]));
     }
 
     //添加或显示fragment
@@ -145,11 +139,16 @@ public abstract class BaseTabActivity extends BaseActivity {
         onTabSelected(position);
     }
 
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_base_tab;
+    }
+
     //获取fragment类
     protected abstract Class[] getFragmentClasses();
 
     //获取tab标题
-    protected abstract String[] getStrings();
+    protected abstract int[] getStrings();
 
     //获取tab图片
     protected abstract int[] getIcons();

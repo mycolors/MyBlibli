@@ -7,7 +7,6 @@ import android.content.Context;
 public class BilibiliApp extends Application {
     public static Context APPCONTEXT;
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -17,4 +16,5 @@ public class BilibiliApp extends Application {
     public static Context getAppContext() {
         return APPCONTEXT;
     }
+
 }

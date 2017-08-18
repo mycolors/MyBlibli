@@ -2,7 +2,6 @@ package com.fengniao.myblibli.module.common;
 
 import android.os.Bundle;
 
-import com.fengniao.myblibli.MainActivity;
 import com.fengniao.myblibli.R;
 import com.fengniao.myblibli.base.BaseActivity;
 
@@ -16,9 +15,13 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
         new SplashPresenter(this);
         mPresenter.setUpSplash();
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_splash;
     }
 
 

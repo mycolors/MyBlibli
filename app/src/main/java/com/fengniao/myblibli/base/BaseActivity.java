@@ -3,6 +3,7 @@ package com.fengniao.myblibli.base;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,12 +13,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fengniao.myblibli.R;
+import com.fengniao.myblibli.util.UIUtils;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.disposables.Disposable;
 
-public class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity {
 
     public final String TAG = getClass().getSimpleName();
     public Toolbar mToolbar;
@@ -27,17 +29,18 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UIUtils.translucentBar(this, Color.TRANSPARENT);
+        setContentView(getLayoutId());
 //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
     }
 
 
+
+    //    调用setContentView时，会调用此方法
     @Override
     public void onContentChanged() {
         super.onContentChanged();
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View
-//                    .SYSTEM_UI_FLAG_LAYOUT_STABLE);
-//        }
         setToolbar();
         unbinder = ButterKnife.bind(this);
     }
@@ -113,9 +116,12 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+
     public Activity getActivity() {
         return this;
     }
+
+    public abstract int getLayoutId();
 
     @Override
     protected void onDestroy() {

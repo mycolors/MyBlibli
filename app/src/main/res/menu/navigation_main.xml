@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/item_home"
+            android:checkable="true"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/item_home" />
+
+        <item
+            android:id="@+id/item_history"
+            android:checkable="true"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/item_history" />
+
+        <item
+            android:id="@+id/item_download_cache"
+            android:checkable="true"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/item_download_cache" />
+
+        <item
+            android:id="@+id/item_my_collect"
+            android:checkable="true"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/item_my_collect" />
+
+
+        <item
+            android:id="@+id/item_my_follow"
+            android:checkable="true"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/item_my_follow" />
+
+        <item
+            android:id="@+id/item_play_later"
+            android:checkable="true"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/item_play_later" />
+    </group>
+
+    <group android:checkableBehavior="single"
+        >
+        <item
+            android:id="@+id/item_my_vip"
+            android:checkable="true"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/item_my_vip" />
+
+
+        <item
+            android:id="@+id/item_free_flow"
+            android:checkable="true"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/item_free_flow" />
+
+        <item
+            android:id="@+id/item_vip_order"
+            android:checkable="true"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/item_vip_order" />
+    </group>
+
+</menu>
