@@ -1,17 +1,20 @@
 package com.fengniao.myblibli.module.common;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.view.WindowManager;
+import android.support.v7.app.AppCompatDelegate;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.fengniao.myblibli.R;
 import com.fengniao.myblibli.base.BaseActivity;
+import com.fengniao.myblibli.bean.DayNight;
 import com.fengniao.myblibli.module.home.HomeTabFragment;
+import com.fengniao.myblibli.util.DayNightHelper;
 import com.fengniao.myblibli.util.UIUtils;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
     @BindView(R.id.drawer_layout)
@@ -19,32 +22,46 @@ public class MainActivity extends BaseActivity {
 
     @BindView(R.id.container)
     FrameLayout container;
+    @BindView(R.id.text_night_mode)
+    TextView textNightMode;
+
+    private DayNightHelper mDayNightHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-
-            WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
-            localLayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | localLayoutParams.flags);
-
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-
-                //将侧边栏顶部延伸至status bar
-
-                drawerLayout.setFitsSystemWindows(true);
-
-                //将主页面顶部延伸至status bar;虽默认为false,但经测试,DrawerLayout需显示设置
-
-                drawerLayout.setClipToPadding(false);
-            }
-        }
+        mDayNightHelper = new DayNightHelper(this);
         initView();
     }
 
     public void initView() {
-        HomeTabFragment fragment = HomeTabFragment.newInstance();
-        getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).show(fragment).commit();
+        HomeTabFragment fragment = (HomeTabFragment) getSupportFragmentManager().findFragmentByTag("home");
+        if (fragment == null)
+            fragment = HomeTabFragment.newInstance();
+        if (fragment.isAdded()) {
+            getSupportFragmentManager().beginTransaction().show(fragment).commit();
+        } else {
+            getSupportFragmentManager().beginTransaction().add(R.id.container, fragment, "home").show(fragment).commit();
+        }
+        if (mDayNightHelper.isNight()) {
+            textNightMode.setText("夜间");
+        } else {
+            textNightMode.setText("白天");
+        }
+    }
+
+    @OnClick(R.id.text_night_mode)
+    public void onViewClicked() {
+        if (mDayNightHelper.isNight()) {
+            UIUtils.showToast("白天模式");
+            mDayNightHelper.setMode(DayNight.DAY);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else {
+            UIUtils.showToast("夜间模式");
+            mDayNightHelper.setMode(DayNight.NIGHT);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+        recreate();
     }
 
     @Override
@@ -63,6 +80,7 @@ public class MainActivity extends BaseActivity {
             return;
         }
         super.onBackPressed();
-
     }
+
+
 }

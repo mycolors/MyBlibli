@@ -3,7 +3,7 @@
     package="com.fengniao.myblibli">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".app.BilibiliApp"
@@ -13,15 +13,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".module.common.MainActivity" />
-        <activity android:name=".module.common.SplashActivity">
+        <activity android:name=".module.common.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".module.common.SplashActivity" />
         <activity android:name=".module.common.LoginActivity" />
+        <activity android:name=".module.home.homepage.live.LivePlayerActivity" />
+        <activity android:name=".module.home.homepage.live.LiveSortActivity" />
+        <activity android:name=".TestActivity"/>
     </application>
 
 </manifest>

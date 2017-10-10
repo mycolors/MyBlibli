@@ -25,7 +25,6 @@ public abstract class BaseTabFragment extends BaseFragment {
     }
 
 
-
     //当前选中的fragment
     protected Fragment currentFragment;
 
@@ -51,7 +50,6 @@ public abstract class BaseTabFragment extends BaseFragment {
     private Class<? extends Fragment>[] fragmentClasses;
 
     private int textColor;
-
 
 
     @Override

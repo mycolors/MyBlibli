@@ -3,8 +3,7 @@ package com.fengniao.myblibli.bean.live;
 
 import java.util.List;
 
-public class LiveData {
-
+public class CommonLiveData {
     private List<LiveBanner> banner;
     private List<EntranceIcon> entranceIcons;
     private List<PartitionsBean> partitions;

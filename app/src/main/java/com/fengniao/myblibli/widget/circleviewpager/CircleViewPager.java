@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
 import com.fengniao.myblibli.R;
 
 import java.util.ArrayList;
@@ -39,21 +40,19 @@ public class CircleViewPager extends FrameLayout {
     //圆点半径
     private float mDotWidth;
 
-    //当前位置
-    private int currentPosition;
-
     //是否循环
     private boolean isLoop;
 
     private LinearLayout linearDot;
+
+    private OnPageClickListener mOnPageClickListener;
 
     private Handler mHandler = new Handler();
 
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            currentPosition++;
-            mViewPager.setCurrentItem(currentPosition);
+            mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
             mHandler.postDelayed(this, interval);
         }
     };
@@ -69,7 +68,6 @@ public class CircleViewPager extends FrameLayout {
     public CircleViewPager(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
-        setViewPagerAdapter();
     }
 
     //初始化
@@ -90,24 +88,58 @@ public class CircleViewPager extends FrameLayout {
 
     //初始化viewpager
     private void setViewPagerAdapter() {
-        if (mAdapter == null)
-            mAdapter = new CirclePagerAdapter();
+        mAdapter = new CirclePagerAdapter();
         mViewPager.setAdapter(mAdapter);
         setTouchListener();
         setPageChangeListener();
     }
 
+
+    public void setImgUrl(List<String> list) {
+        if (list == null) return;
+        List<String> mList = new ArrayList<>();
+        mList.addAll(list);
+        initDot(list.size());
+        //防止图片数量等于2时出现空白页
+        if (list.size() == 2) {
+            mList.addAll(list);
+        }
+        List<ImageView> imgList = new ArrayList<>();
+        for (int i = 0; i < mList.size(); i++) {
+
+        }
+        for (int i = 0; i < mList.size(); i++) {
+            ImageView imageView = new ImageView(getContext());
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            Glide.with(getContext()).load(mList.get(i)).into(imageView);
+            if (mOnPageClickListener != null) {
+                int finalI = i;
+                imageView.setOnClickListener(v ->
+                        mOnPageClickListener.onPageClick(finalI));
+            }
+            imgList.add(imageView);
+        }
+        setViewPagerAdapter();
+        mAdapter.setImage(imgList);
+        mAdapter.notifyDataSetChanged();
+        if (list.size() > 1) {
+            //防止刷新数据后，还显示以前的图片，重新setAdapter
+            startCircleViewPager();
+        }
+    }
+
+
     //设置图片
     public void setImage(List<ImageView> list) {
-        if (list == null || mAdapter == null) return;
-        mAdapter.setImage(list);
+        if (list == null) return;
+        List<ImageView> mList = new ArrayList<>();
+        mList.addAll(list);
+        setViewPagerAdapter();
         initDot(list.size());
+        mAdapter.setImage(mList);
+        mAdapter.notifyDataSetChanged();
         if (list.size() > 1) {
-            //设置默认位置
-            currentPosition = 2 * list.size();
-            mViewPager.setCurrentItem(currentPosition, false);
             //防止刷新数据后，还显示以前的图片，重新setAdapter
-            mViewPager.setAdapter(mAdapter);
             startCircleViewPager();
         }
     }
@@ -125,11 +157,12 @@ public class CircleViewPager extends FrameLayout {
             linearDot.addView(imgDot, params);
             mDotList.add(imgDot);
         }
-        selectionDot(currentPosition % count);
+        selectionDot(0);
     }
 
     //选中指示器
     private void selectionDot(int index) {
+        if (index > (linearDot.getChildCount() - 1)) return;
         for (int i = 0; i < linearDot.getChildCount(); i++) {
             int res = i == index ? mSelectDotRes : mNormalDotRes;
             ((ImageView) linearDot.getChildAt(i)).setImageResource(res);
@@ -146,23 +179,11 @@ public class CircleViewPager extends FrameLayout {
 
                     @Override
                     public void onPageSelected(int position) {
-                        currentPosition = position;
-                        if (!mDotList.isEmpty()) {
-                            selectionDot(currentPosition % mDotList.size());
-                        }
+                        selectionDot(position % mDotList.size());
                     }
 
                     @Override
                     public void onPageScrollStateChanged(int state) {
-                        if (mDotList.size() > 1) {
-                            //当检查到当前位置达到最前或者最后跳转到初始位置
-                            if (currentPosition < mDotList.size() - 1 ||
-                                    currentPosition > 9 * mDotList.size() - 1)
-                                if (state == ViewPager.SCROLL_STATE_IDLE) {
-                                    mViewPager.setCurrentItem(2 * mDotList.size()
-                                            + currentPosition % mDotList.size() - 1, false);
-                                }
-                        }
 
                     }
                 });
@@ -187,49 +208,32 @@ public class CircleViewPager extends FrameLayout {
         });
     }
 
+    //开始轮播
     private void startCircleViewPager() {
-        if (!isLoop && mViewPager != null) {
-            mHandler.postDelayed(mRunnable, interval);
-            isLoop = true;
-        }
+        if (isLoop) return;
+        mHandler.postDelayed(mRunnable, interval);
+        isLoop = true;
     }
 
+    //停止轮播
     public void stopCircleViewPager() {
-        if (isLoop && mViewPager != null) {
-            mHandler.removeCallbacks(mRunnable);
-            isLoop = false;
-        }
+        if (!isLoop) return;
+        mHandler.removeCallbacks(mRunnable);
+        isLoop = false;
     }
 
 
-    //尽量避免使用，防止出现anr
-    public void setCurrentItem(int item) {
-        if (!mDotList.isEmpty()) {
-            currentPosition = 2 * mDotList.size() + item;
-            mViewPager.setCurrentItem(currentPosition);
-        }
-    }
-
-    //尽量避免使用，防止出现anr
-    public void setCurrentItem(int item, boolean smoothScroll) {
-        if (!mDotList.isEmpty()) {
-            currentPosition = 2 * mDotList.size() + item;
-            currentPosition = Integer.MAX_VALUE / 2 - Integer.MAX_VALUE / 2 % mDotList.size() + item;
-            mViewPager.setCurrentItem(currentPosition, smoothScroll);
-        }
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        startCircleViewPager();
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        stopCircleViewPager();
-    }
+//    @Override
+//    protected void onAttachedToWindow() {
+//        super.onAttachedToWindow();
+//        startCircleViewPager();
+//    }
+//
+//    @Override
+//    protected void onDetachedFromWindow() {
+//        super.onDetachedFromWindow();
+//        stopCircleViewPager();
+//    }
 
     public void setInterval(int interval) {
         this.interval = interval;
@@ -247,5 +251,11 @@ public class CircleViewPager extends FrameLayout {
         this.mDotWidth = mDotWidth;
     }
 
+    public interface OnPageClickListener {
+        void onPageClick(int position);
+    }
 
+    public void setOnPageClickListener(OnPageClickListener mOnPageClickListener) {
+        this.mOnPageClickListener = mOnPageClickListener;
+    }
 }

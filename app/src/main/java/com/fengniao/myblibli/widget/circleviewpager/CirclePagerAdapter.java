@@ -21,12 +21,12 @@ public class CirclePagerAdapter extends PagerAdapter {
         if (mList == null) mList = new ArrayList<>();
         mList.clear();
         mList.addAll(list);
-        notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return 10 * mList.size();
+        if (mList.size() < 2) return mList.size();
+        return Integer.MAX_VALUE;
     }
 
     @Override
@@ -35,18 +35,19 @@ public class CirclePagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(final ViewGroup container, final int position) {
-        if (!mList.isEmpty()) {
-            ImageView imageView = mList.get(position % mList.size());
-            ViewParent parent = imageView.getParent();
-            if (parent != null) {
-                ViewGroup group = (ViewGroup) parent;
-                group.removeView(imageView);
-            }
-            container.addView(imageView);
-            return imageView;
+    public Object instantiateItem(final ViewGroup container, int position) {
+        position %= mList.size();
+        if (position < 0) {
+            position = mList.size() + position;
         }
-        return null;
+        ImageView imageView = mList.get(position);
+        ViewParent parent = imageView.getParent();
+        if (parent != null) {
+            ViewGroup group = (ViewGroup) parent;
+            group.removeView(imageView);
+        }
+        container.addView(imageView);
+        return imageView;
     }
 
     @Override

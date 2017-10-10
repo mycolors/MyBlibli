@@ -18,7 +18,6 @@ public class RegionPageFragment extends BaseFragment {
     }
 
 
-
     @Override
     public int getLayoutId() {
         return R.layout.fragment_region_page;

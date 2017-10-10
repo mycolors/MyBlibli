@@ -26,7 +26,7 @@ public abstract class BaseListActivity<T> extends BaseActivity implements FNAdap
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(0);
+        setContentView(getLayoutId());
         initView();
     }
 
@@ -67,6 +67,7 @@ public abstract class BaseListActivity<T> extends BaseActivity implements FNAdap
 
     public void initView() {
         mList = new ArrayList<>();
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         showRefreshBar(true);
         initAdapter();
         mLayoutManager = onCreateLayoutManager();

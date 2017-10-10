@@ -31,13 +31,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         UIUtils.translucentBar(this, Color.TRANSPARENT);
         setContentView(getLayoutId());
-//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    //   setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
     }
 
 
-
-    //    调用setContentView时，会调用此方法
+    //  调用setContentView时，会调用此方法
     @Override
     public void onContentChanged() {
         super.onContentChanged();

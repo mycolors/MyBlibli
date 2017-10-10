@@ -32,17 +32,16 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
         if (fragments[position] == null) {
             switch (position) {
                 case 0:
-                    fragments[position] = LiveFragment.newInstance();
+                    fragments[position] = LiveFragment.Companion.newInstance();
                     break;
                 case 1:
-                    fragments[position] = RecommendFragment.newInstance();
+                    fragments[position] = RecommendFragment.Companion.newInstance();
                     break;
                 case 2:
-                    fragments[position] = DramaFragment.newInstance();
+                    fragments[position] = DramaFragment.Companion.newInstance();
                     break;
                 default:
                     break;
-
 
             }
         }

@@ -4,9 +4,16 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.fengniao.myblibli.widget.circleviewpager.CircleViewPager
-        android:id="@+id/banner_pager"
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="100dp" />
+        android:layout_height="100dp"
+        android:background="@drawable/ripple_with_color_mask">
+
+        <com.fengniao.myblibli.widget.circleviewpager.CircleViewPager
+            android:id="@+id/banner_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/ripple_with_color_mask" />
+    </android.support.v7.widget.CardView>
 
 </LinearLayout>

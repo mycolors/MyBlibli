@@ -40,8 +40,7 @@
             android:title="@string/item_play_later" />
     </group>
 
-    <group android:checkableBehavior="single"
-        >
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/item_my_vip"
             android:checkable="true"
@@ -60,6 +59,11 @@
             android:checkable="true"
             android:icon="@mipmap/ic_launcher"
             android:title="@string/item_vip_order" />
+
+        <item android:title="" />
+
+        <item android:title="" />
+
     </group>
 
 </menu>

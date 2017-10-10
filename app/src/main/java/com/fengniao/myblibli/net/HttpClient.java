@@ -5,6 +5,8 @@ import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.fengniao.myblibli.app.BilibiliApp;
 import com.fengniao.myblibli.net.api.HomeService;
 import com.fengniao.myblibli.net.api.LiveService;
+import com.fengniao.myblibli.net.api.home.DramaService;
+import com.fengniao.myblibli.net.api.home.RecommendService;
 import com.fengniao.myblibli.util.NetworkUtils;
 
 import java.io.File;
@@ -56,6 +58,15 @@ public class HttpClient {
     }
 
 
+    public RecommendService getRecommendService() {
+        return createApi(RecommendService.class, ApiConstants.APP_BASE_URL);
+    }
+
+    public DramaService getDramaService() {
+        return createApi(DramaService.class, ApiConstants.BANGUMI_BASE_URL);
+    }
+
+
     private <T> T createApi(Class<T> tClass, String baseUrl) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
@@ -85,7 +96,7 @@ public class HttpClient {
                     .connectTimeout(30, TimeUnit.SECONDS)
                     .writeTimeout(20, TimeUnit.SECONDS)
                     .readTimeout(20, TimeUnit.SECONDS)
-                    .addInterceptor(new UserAgentInterceptor())
+//                    .addInterceptor(new UserAgentInterceptor())
                     .build();
         }
     }

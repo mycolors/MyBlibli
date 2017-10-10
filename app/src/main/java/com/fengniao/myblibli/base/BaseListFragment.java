@@ -30,6 +30,13 @@ public abstract class BaseListFragment<T> extends BaseFragment implements FNAdap
     private boolean isViewCreated = false;
     private boolean isFirst = true;
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        isViewCreated = true;
+        initView();
+    }
+
     public BaseListFragment() {
         // Required empty public constructor
     }
@@ -51,13 +58,6 @@ public abstract class BaseListFragment<T> extends BaseFragment implements FNAdap
 
     //是否开启懒加载
     public abstract boolean enableLazyLoad();
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        isViewCreated = true;
-        initView();
-    }
 
     //刷新控件开关
     public void enableRefresh(boolean status) {
@@ -109,7 +109,13 @@ public abstract class BaseListFragment<T> extends BaseFragment implements FNAdap
             }
         });
         afterCreateView();
-        if (!enableLazyLoad()) loadData();
+        if (enableLazyLoad()) {
+            if (!isFirst) {
+                loadData();
+            }
+        } else {
+            loadData();
+        }
     }
 
     public void afterCreateView() {
