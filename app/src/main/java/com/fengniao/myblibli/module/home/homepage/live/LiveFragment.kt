@@ -15,6 +15,11 @@ import com.fengniao.myblibli.R
 import com.fengniao.myblibli.base.BaseListFragment
 import com.fengniao.myblibli.base.FNAdapter
 import com.fengniao.myblibli.bean.live.*
+import com.fengniao.myblibli.module.home.homepage.live.LivePlayerActivity.Companion.LIVE_AVATAR
+import com.fengniao.myblibli.module.home.homepage.live.LivePlayerActivity.Companion.LIVE_ONLINE_COUNT
+import com.fengniao.myblibli.module.home.homepage.live.LivePlayerActivity.Companion.LIVE_TITLE
+import com.fengniao.myblibli.module.home.homepage.live.LivePlayerActivity.Companion.LIVE_UP_NAME
+import com.fengniao.myblibli.module.home.homepage.live.LivePlayerActivity.Companion.LIVE_URL
 import com.fengniao.myblibli.net.HttpClient
 import com.fengniao.myblibli.widget.circleviewpager.CircleViewPager
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -155,7 +160,12 @@ class LiveFragment : BaseListFragment<Any>() {
         }
         if (mList[position] is Live) {
             val intent = Intent(context, LivePlayerActivity::class.java)
-            intent.putExtra("live", mList[position] as Parcelable)
+            val live = mList[position] as Live
+            intent.putExtra(LIVE_TITLE,live.title)
+            intent.putExtra(LIVE_UP_NAME,live.owner.name)
+            intent.putExtra(LIVE_ONLINE_COUNT,live.online.toString())
+            intent.putExtra(LIVE_AVATAR,live.owner.face)
+            intent.putExtra(LIVE_URL,live.playurl)
             jumpToActivity(intent)
         }
     }

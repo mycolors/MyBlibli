@@ -8,6 +8,6 @@ data class RecommendPageResult(var code: Int, var result: List<RecommendPageData
     data class Body(var title: String?, var style: String?, var cover: String?,
                     var param: String?, var goto: String?, var width: Int?,
                     var height: Int?, var up_face: String?, var up: String?,
-                    var online: Int?, var area: String?, var area_id: Int?)
-
+                    var online: Int?, var area: String?, var area_id: Int?,
+                    var isLive: Boolean)
 }

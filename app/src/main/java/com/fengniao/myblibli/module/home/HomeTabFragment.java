@@ -9,9 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -22,7 +20,6 @@ import com.fengniao.myblibli.module.dynamic.DynamicPageFragment;
 import com.fengniao.myblibli.module.home.homepage.HomePageFragment;
 import com.fengniao.myblibli.module.message.MessagePageFragment;
 import com.fengniao.myblibli.module.region.RegionPageFragment;
-import com.fengniao.myblibli.util.UIUtils;
 
 import butterknife.BindView;
 
@@ -49,8 +46,6 @@ public class HomeTabFragment extends BaseTabFragment {
 
     private ObjectAnimator outAnima;
 
-    private float curTranslationY;
-
 
     public static HomeTabFragment newInstance() {
         return new HomeTabFragment();
@@ -71,50 +66,97 @@ public class HomeTabFragment extends BaseTabFragment {
 
 
     private void initAnima() {
-        curTranslationY = linearTab.getTranslationY();
         final int[] offset = {0};
-        inAnima = ObjectAnimator.ofInt(linearTab, "translationY", (int) curTranslationY + linearTab.getHeight(), -linearTab.getHeight());
-        outAnima = ObjectAnimator.ofInt(linearTab, "translationX", 0, 500, 0);
-        inAnima.setDuration(2000);
-        outAnima.setDuration(2000);
-        outAnima.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                Log.i("test", "end");
-            }
-        });
 
 //        添加appbarlayout的折叠监听  verticalOffset表示折叠的像素
         appBarLayout.addOnOffsetChangedListener((appBarLayout1, verticalOffset) -> {
-            ViewCompat.setTranslationY(linearTab, Math.abs(Float.parseFloat(UIUtils.getPercent(verticalOffset, toolbar.getHeight())))
-                    * linearTab.getHeight());
-//            showOrHideTab(offset[0] < verticalOffset);
-//            offset[0] = verticalOffset;
+            //动态显示底部tab导航 方法一
+//            ViewCompat.setTranslationY(linearTab, Math.abs(Float.parseFloat(UIUtils.getPercent(verticalOffset, toolbar.getHeight())))
+//                    * linearTab.getHeight());
+            if (offset[0] == verticalOffset) {
+                return;
+            }
+            //方法二
+            showOrHideTab(offset[0] < verticalOffset);
+            offset[0] = verticalOffset;
         });
     }
 
     private void showOrHideTab(boolean show) {
         if (show) {
-            if (curTranslationY != linearTab.getTranslationY())
-                showTab();
+            showTab();
         } else {
-            if (curTranslationY == linearTab.getTranslationY())
-                hideTab();
+            hideTab();
         }
     }
 
     private void showTab() {
-        if (!inAnima.isRunning()) {
+        if (linearTab.getTranslationY() == 0) {
+            return;
+        }
+        if (outAnima != null && outAnima.isRunning()) {
+            outAnima.cancel();
+        }
+        if (inAnima == null) {
+            inAnima = ObjectAnimator.ofFloat(linearTab, "translationY", linearTab.getTranslationY(), 0);
+            inAnima.setDuration(200);
             inAnima.start();
+            inAnima.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    super.onAnimationCancel(animation);
+                    inAnima.removeAllListeners();
+                    inAnima = null;
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    inAnima.removeAllListeners();
+                    inAnima = null;
+                }
+            });
+        } else {
+            if (!inAnima.isRunning()) {
+                inAnima.start();
+            }
         }
     }
 
     private void hideTab() {
-        if (!outAnima.isRunning())
+        if (linearTab.getTranslationY() ==
+                linearTab.getHeight()) {
+            return;
+        }
+        if (inAnima != null && inAnima.isRunning()) {
+            inAnima.cancel();
+        }
+        if (outAnima == null) {
+            outAnima = ObjectAnimator.ofFloat(linearTab, "translationY", linearTab.getTranslationY(),
+                    linearTab.getHeight());
+            outAnima.setDuration(200);
             outAnima.start();
-    }
+            outAnima.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    super.onAnimationCancel(animation);
+                    outAnima.removeAllListeners();
+                    outAnima = null;
+                }
 
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    outAnima.removeAllListeners();
+                    outAnima = null;
+                }
+            });
+        } else {
+            if (!outAnima.isRunning()) {
+                outAnima.start();
+            }
+        }
+    }
 
     @Override
     protected Class[] getFragmentClasses() {

@@ -54,6 +54,9 @@ public class Live implements Parcelable {
         this.area_v2_parent_name = area_v2_parent_name;
     }
 
+    public Live() {
+    }
+
 
     protected Live(Parcel in) {
         owner = in.readParcelable(OwnerBean.class.getClassLoader());
